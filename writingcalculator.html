@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .container {
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #result p {
+            font-size: 18px;
+            margin: 5px;
+        }
+
+        #result span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Typing Speed Calculator</h1>
+        <p>Type the following text and press Enter when done:</p>
+        <p id="quote">The quick brown fox jumps over the lazy dog.</p>
+        <textarea id="textInput" rows="5" placeholder="Start typing here..."></textarea>
+        <button id="startButton">Start</button>
+        <button id="submitButton">Submit</button>
+        <div id="result">
+            <p>Time: <span id="timeElapsed">0</span> seconds</p>
+            <p>Words Typed: <span id="wordCount">0</span></p>
+            <p>Typing Speed: <span id="typingSpeed">0</span> WPM</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const quote = "The quick brown fox jumps over the lazy dog.";
+            const textInput = document.getElementById("textInput");
+            const startButton = document.getElementById("startButton");
+            const submitButton = document.getElementById("submitButton");
+            const timeElapsed = document.getElementById("timeElapsed");
+            const wordCount = document.getElementById("wordCount");
+            const typingSpeed = document.getElementById("typingSpeed");
+
+            let startTime, endTime, timer;
+
+            function startTimer() {
+                textInput.removeEventListener("keydown", startTimer);
+                startTime = new Date();
+                timer = setInterval(updateTimer, 1000);
+            }
+
+            function updateTimer() {
+                const currentTime = new Date();
+                const elapsedTime = (currentTime - startTime) / 1000;
+                timeElapsed.textContent = elapsedTime.toFixed(1);
+            }
+
+            startButton.addEventListener("click", function() {
+                textInput.value = "";
+                wordCount.textContent = "0";
+                typingSpeed.textContent = "0 WPM";
+                timeElapsed.textContent = "0";
+                textInput.addEventListener("keydown", startTimer);
+                textInput.focus();
+            });
+
+            submitButton.addEventListener("click", function() {
+                clearInterval(timer);
+                endTime = new Date();
+                const elapsedTime = (endTime - startTime) / 1000;
+                const wpm = Math.round((wordCount.textContent / elapsedTime) * 60);
+                typingSpeed.textContent = wpm + " WPM";
+            });
+
+            textInput.addEventListener("input", function() {
+                const text = textInput.value;
+                const words = text.split(" ");
+                const numWords = words.length;
+
+                wordCount.textContent = numWords;
+
+                if (quote.startsWith(text)) {
+                    if (quote === text) {
+                        clearInterval(timer);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
